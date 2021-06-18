@@ -1,211 +1,287 @@
 <html>
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-
-  <title>Ionic Swipe Down</title>
-
-  <link href="http://www.loringdodge.com/files/ionic.min.css" rel="stylesheet">
-  
-  <script src="https://code.ionicframework.com/collide/0.0.4/collide.js"></script>
-
-  <script src="http://www.loringdodge.com/files/ionic.bundle.min.js"></script>
-  <script src="http://www.loringdodge.com/files/ionic.swoosh.cards.js"></script>
-</head>
-<style>
-/* CORE */
-
-swoosh-cards {
-  display: block;
+  <style>
+    *, *:before, *:after {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
-swoosh-card {
-  position: absolute;
-  top: calc(50% - 175px);
-  left: calc(50% - 100px);
-  width: 200px;
-  height: 350px;
-  border-radius: 6px;
-  background-color: #FFF;
+body {
+  background: #CCFBFE;
   overflow: hidden;
+  font-family: sans-serif;
 }
 
-swoosh-card .overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #333;
+.tinder {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
   opacity: 0;
-  z-index: 11;
+  transition: opacity 0.1s ease-in-out;
 }
 
-swoosh-card .content {
+.loaded.tinder {
+  opacity: 1;
+}
+
+.tinder--status {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 50%;
+  margin-top: -30px;
+  z-index: 2;
   width: 100%;
-  height: 100%;
-  z-index: 10;
-}
-
-/* DEMO */
-swoosh-card .top {
-  width: 100%;
-  height: 160px;
-  border-radius: 4px 4px 0 0;
-  overflow: hidden;
-}
-
-swoosh-card img {
-  width: 100%;
-}
-
-swoosh-card .bottom {
-  border-radius: 0 0 4px 4px;
-}
-
-swoosh-card .bottom h1 {
-  margin: 10px 0 0 0;
-  font-size: 14px;
   text-align: center;
+  pointer-events: none;
 }
 
-swoosh-card .bottom p {
-  margin: 10px 15px;
-  font-size: 11px;
-}
-
-.discard {
+.tinder--status i {
+  font-size: 100px;
+  opacity: 0;
+  transform: scale(0.3);
+  transition: all 0.2s ease-in-out;
   position: absolute;
-  left: calc(50% - 35px);
-  bottom: 10px;
-  padding: 7px 10px;
-  color: #FFF;
-  font-weight: bold;
-  font-size: 12px;
-  background-color: rgba(0, 0, 0, 0.7);
-  border-radius: 20px 20px 20px 20px;
+  width: 100px;
+  margin-left: -50px;
 }
 
-.background-grey {
-  background-color: #333 !important;
+.tinder_love .fa-heart {
+  opacity: 0.7;
+  transform: scale(1);
 }
-</style>
-  <body ng-app="starter" no-scroll>
-    <ion-pane ng-controller="CardsCtrl" class="background-grey">
 
-      <ion-header-bar class="bar-default">
-        <h1 class="title">Ionic Swoosh Cards</h1>
-      </ion-header-bar>
-      <div ng-if="cards.active">
-        <swoosh-cards>
-          <swoosh-card ng-repeat="card in cards.active" on-destroy="cardDestroyed($index)">
-            <div ng-controller="CardCtrl">
+.tinder_nope .fa-remove {
+  opacity: 0.7;
+  transform: scale(1);
+}
 
-              <div class="top">
-                <img ng-src="{{ card.image }}" />
-              </div>
-              <div class="bottom">
-                <h1>{{ card.country }}</h1>
-                <p>{{ card.text }}</p>
-                <div class="discard" ng-click="discard(card)">DISCARD</div>
-              </div>
-            </div>
-          </swoosh-card>
+.tinder--cards {
+  flex-grow: 1;
+  padding-top: 40px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 1;
+}
 
-        </swoosh-cards>
-      </div>
+.tinder--card {
+  display: inline-block;
+  width: 90vw;
+  max-width: 400px;
+  height: 70vh;
+  background: #FFFFFF;
+  padding-bottom: 40px;
+  border-radius: 8px;
+  overflow: hidden;
+  position: absolute;
+  will-change: transform;
+  transition: all 0.3s ease-in-out;
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+  cursor: grab;
+}
 
-    </ion-pane>
+.moving.tinder--card {
+  transition: none;
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
+  cursor: grabbing;
+}
+
+.tinder--card img {
+  max-width: 100%;
+  pointer-events: none;
+}
+
+.tinder--card h3 {
+  margin-top: 32px;
+  font-size: 32px;
+  padding: 0 16px;
+  pointer-events: none;
+}
+
+.tinder--card p {
+  margin-top: 24px;
+  font-size: 20px;
+  padding: 0 16px;
+  pointer-events: none;
+}
+
+.tinder--buttons {
+  flex: 0 0 100px;
+  text-align: center;
+  padding-top: 20px;
+}
+
+.tinder--buttons button {
+  border-radius: 50%;
+  line-height: 60px;
+  width: 60px;
+  border: 0;
+  background: #FFFFFF;
+  display: inline-block;
+  margin: 0 8px;
+}
+
+.tinder--buttons button:focus {
+  outline: 0;
+}
+
+.tinder--buttons i {
+  font-size: 32px;
+  vertical-align: middle;
+}
+
+.fa-heart {
+  color: #FFACE4;
+}
+
+.fa-remove {
+  color: #CDD6DD;
+}
+
+  </style>
+<body>
+<div class="tinder">
+  <div class="tinder--status">
+    <i class="fa fa-remove"></i>
+    <i class="fa fa-heart"></i>
+  </div>
+
+  <div class="tinder--cards">
+    <div class="tinder--card">
+      <img src="https://placeimg.com/600/300/people">
+      <h3>Demo card 1</h3>
+      <p>This is a demo for Tinder like swipe cards</p>
+    </div>
+    <div class="tinder--card">
+      <img src="https://placeimg.com/600/300/animals">
+      <h3>Demo card 2</h3>
+      <p>This is a demo for Tinder like swipe cards</p>
+    </div>
+    <div class="tinder--card">
+      <img src="https://placeimg.com/600/300/nature">
+      <h3>Demo card 3</h3>
+      <p>This is a demo for Tinder like swipe cards</p>
+    </div>
+    <div class="tinder--card">
+      <img src="https://placeimg.com/600/300/tech">
+      <h3>Demo card 4</h3>
+      <p>This is a demo for Tinder like swipe cards</p>
+    </div>
+    <div class="tinder--card">
+      <img src="https://placeimg.com/600/300/arch">
+      <h3>Demo card 5</h3>
+      <p>This is a demo for Tinder like swipe cards</p>
+    </div>
+  </div>
+
+  <div class="tinder--buttons">
+    <button id="nope"><i class="fa fa-remove"></i></button>
+    <button id="love"><i class="fa fa-heart"></i></button>
+  </div>
+</div>
   </body>
-<script>
-angular.module('starter', ['ionic', 'ionic.swoosh.cards'])
+  <script>
+    'use strict';
 
-.directive('noScroll', function($document) {
+var tinderContainer = document.querySelector('.tinder');
+var allCards = document.querySelectorAll('.tinder--card');
+var nope = document.getElementById('nope');
+var love = document.getElementById('love');
 
-  return {
-    restrict: 'A',
-    link: function($scope, $element, $attr) {
+function initCards(card, index) {
+  var newCards = document.querySelectorAll('.tinder--card:not(.removed)');
 
-      $document.on('touchmove', function(e) {
-        e.preventDefault();
-      });
-    }
-  }
-})
+  newCards.forEach(function (card, index) {
+    card.style.zIndex = allCards.length - index;
+    card.style.transform = 'scale(' + (20 - index) / 20 + ') translateY(-' + 30 * index + 'px)';
+    card.style.opacity = (10 - index) / 10;
+  });
+  
+  tinderContainer.classList.add('loaded');
+}
 
-.controller('CardsCtrl', function($scope, $timeout) {
+initCards();
 
-  var cardTypes = [
-    {
-      country: 'Switzerland',
-      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      image: 'http://c4.staticflickr.com/4/3924/18886530069_840bc7d2a5_m.jpg',
-    }, {
-      country: 'Germany',
-      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      image: 'http://c1.staticflickr.com/1/421/19046467146_548ed09e19_m.jpg'
-    }, {
-      country: 'Belgium',
-      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      image: 'http://c1.staticflickr.com/1/278/18452005203_a3bd2d7938_m.jpg'
-    }, {
-      country: 'France',
-      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      image: 'http://c1.staticflickr.com/1/297/19072713565_be3113bc67_m.jpg'
-    }, {
-      country: 'France',
-      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      image: 'http://c1.staticflickr.com/1/536/19072713515_5961d52357_m.jpg'
-    }, {
-      country: 'France',
-      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      image: 'http://c4.staticflickr.com/4/3937/19072713775_156a560e09_m.jpg'
-    }, {
-      country: 'France',
-      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      image: 'http://c1.staticflickr.com/1/267/19067097362_14d8ed9389_m.jpg'
-    }
-  ];
+allCards.forEach(function (el) {
+  var hammertime = new Hammer(el);
 
-  $scope.cards = {
-    master: Array.prototype.slice.call(cardTypes, 0),
-    active: Array.prototype.slice.call(cardTypes, 0),
-    discards: [],
-    liked: [],
-    disliked: []
-  }
-
-  $scope.cardDestroyed = function(index) {
-    var card = $scope.cards.active.splice(index, 1);
-    // $scope.addCard(card);
-  };
-
-  $scope.addCard = function(card) {
-    $scope.cards.active.push(angular.extend({}, card));
-  }
-
-  $scope.refreshCards = function() {
-    // Set $scope.cards to null so that directive reloads
-    $scope.cards.active = null;
-    $timeout(function() {
-      $scope.cards.active = Array.prototype.slice.call($scope.cards.master, 0);
-    });
-  }
-
-  $scope.$on('discard', function(event, element, card) {
-    // var discarded = $scope.cards.master.splice($scope.cards.master.indexOf(card), 1);
-    // $scope.cards.discards.push(discarded);
+  hammertime.on('pan', function (event) {
+    el.classList.add('moving');
   });
 
-})
+  hammertime.on('pan', function (event) {
+    if (event.deltaX === 0) return;
+    if (event.center.x === 0 && event.center.y === 0) return;
 
-.controller('CardCtrl', function($scope) {
+    tinderContainer.classList.toggle('tinder_love', event.deltaX > 0);
+    tinderContainer.classList.toggle('tinder_nope', event.deltaX < 0);
 
+    var xMulti = event.deltaX * 0.03;
+    var yMulti = event.deltaY / 80;
+    var rotate = xMulti * yMulti;
+
+    event.target.style.transform = 'translate(' + event.deltaX + 'px, ' + event.deltaY + 'px) rotate(' + rotate + 'deg)';
+  });
+
+  hammertime.on('panend', function (event) {
+    el.classList.remove('moving');
+    tinderContainer.classList.remove('tinder_love');
+    tinderContainer.classList.remove('tinder_nope');
+
+    var moveOutWidth = document.body.clientWidth;
+    var keep = Math.abs(event.deltaX) < 80 || Math.abs(event.velocityX) < 0.5;
+
+    event.target.classList.toggle('removed', !keep);
+
+    if (keep) {
+      event.target.style.transform = '';
+    } else {
+      var endX = Math.max(Math.abs(event.velocityX) * moveOutWidth, moveOutWidth);
+      var toX = event.deltaX > 0 ? endX : -endX;
+      var endY = Math.abs(event.velocityY) * moveOutWidth;
+      var toY = event.deltaY > 0 ? endY : -endY;
+      var xMulti = event.deltaX * 0.03;
+      var yMulti = event.deltaY / 80;
+      var rotate = xMulti * yMulti;
+
+      event.target.style.transform = 'translate(' + toX + 'px, ' + (toY + event.deltaY) + 'px) rotate(' + rotate + 'deg)';
+      initCards();
+    }
+  });
 });
 
-</script>
+function createButtonListener(love) {
+  return function (event) {
+    var cards = document.querySelectorAll('.tinder--card:not(.removed)');
+    var moveOutWidth = document.body.clientWidth * 1.5;
+
+    if (!cards.length) return false;
+
+    var card = cards[0];
+
+    card.classList.add('removed');
+
+    if (love) {
+      card.style.transform = 'translate(' + moveOutWidth + 'px, -100px) rotate(-30deg)';
+    } else {
+      card.style.transform = 'translate(-' + moveOutWidth + 'px, -100px) rotate(30deg)';
+    }
+
+    initCards();
+
+    event.preventDefault();
+  };
+}
+
+var nopeListener = createButtonListener(false);
+var loveListener = createButtonListener(true);
+
+nope.addEventListener('click', nopeListener);
+love.addEventListener('click', loveListener);
+  </script>
 </html>
