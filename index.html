@@ -1,287 +1,164 @@
 <html>
   <style>
-    *, *:before, *:after {
+    @import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
+
+* {
   box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+  font-weight: normal;
 }
 
 body {
-  background: #CCFBFE;
-  overflow: hidden;
-  font-family: sans-serif;
-}
-
-.tinder {
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  opacity: 0;
-  transition: opacity 0.1s ease-in-out;
-}
-
-.loaded.tinder {
-  opacity: 1;
-}
-
-.tinder--status {
-  position: absolute;
-  top: 50%;
-  margin-top: -30px;
-  z-index: 2;
-  width: 100%;
+  color: #555;
+  background: #222;
   text-align: center;
-  pointer-events: none;
+  font-family: 'Roboto Mono';
+  padding: 1em;
 }
 
-.tinder--status i {
-  font-size: 100px;
-  opacity: 0;
-  transform: scale(0.3);
-  transition: all 0.2s ease-in-out;
-  position: absolute;
-  width: 100px;
-  margin-left: -50px;
+h1 {
+  font-size: 2.2em;
 }
 
-.tinder_love .fa-heart {
-  opacity: 0.7;
-  transform: scale(1);
+// base
+.flip {
+    position: relative;
+    >.front,
+    >.back {
+        display: block;
+        transition-timing-function: cubic-bezier(.175, .885, .32, 1.275);
+        transition-duration: .5s;
+        transition-property: transform, opacity;
+    }
+    >.front {
+        transform: rotateY(0deg);
+    }
+    >.back {
+        position: absolute;
+        opacity: 0;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        transform: rotateY(-180deg);
+    }
+    &:hover {
+        >.front {
+            transform: rotateY(180deg);
+        }
+        >.back {
+            opacity: 1;
+            transform: rotateY(0deg);
+        }
+    }
+    &.flip-vertical {
+        >.back {
+            transform: rotateX(-180deg);
+        }
+        &:hover {
+            >.front {
+                transform: rotateX(180deg);
+            }
+            >.back {
+                transform: rotateX(0deg);
+            }
+        }
+    }
 }
 
-.tinder_nope .fa-remove {
-  opacity: 0.7;
-  transform: scale(1);
+// custom
+.flip {
+    position: relative;
+    display: inline-block;
+    margin-right: 2px;
+    margin-bottom: 1em;
+    width: 400px;
+    >.front,
+    >.back {
+      display: block;
+      color: white;
+      width: inherit;
+      background-size: cover!important;
+      background-position: center!important;
+      height: 220px;
+      padding: 1em 2em;
+      background: #313131;
+      border-radius: 10px;
+      p {
+        font-size: 0.9125rem;
+        line-height: 160%;
+        color: #999;
+      }
+    }
 }
 
-.tinder--cards {
-  flex-grow: 1;
-  padding-top: 40px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  z-index: 1;
+.text-shadow {
+text-shadow: 1px 1px rgba(0, 0, 0, 0.04), 2px 2px rgba(0, 0, 0, 0.04), 3px 3px rgba(0, 0, 0, 0.04), 4px 4px rgba(0, 0, 0, 0.04), 0.125rem 0.125rem rgba(0, 0, 0, 0.04), 6px 6px rgba(0, 0, 0, 0.04), 7px 7px rgba(0, 0, 0, 0.04), 8px 8px rgba(0, 0, 0, 0.04), 9px 9px rgba(0, 0, 0, 0.04), 0.3125rem 0.3125rem rgba(0, 0, 0, 0.04), 11px 11px rgba(0, 0, 0, 0.04), 12px 12px rgba(0, 0, 0, 0.04), 13px 13px rgba(0, 0, 0, 0.04), 14px 14px rgba(0, 0, 0, 0.04), 0.625rem 0.625rem rgba(0, 0, 0, 0.04), 16px 16px rgba(0, 0, 0, 0.04), 17px 17px rgba(0, 0, 0, 0.04), 18px 18px rgba(0, 0, 0, 0.04), 19px 19px rgba(0, 0, 0, 0.04), 1.25rem 1.25rem rgba(0, 0, 0, 0.04);
 }
-
-.tinder--card {
-  display: inline-block;
-  width: 90vw;
-  max-width: 400px;
-  height: 70vh;
-  background: #FFFFFF;
-  padding-bottom: 40px;
-  border-radius: 8px;
-  overflow: hidden;
-  position: absolute;
-  will-change: transform;
-  transition: all 0.3s ease-in-out;
-  cursor: -webkit-grab;
-  cursor: -moz-grab;
-  cursor: grab;
-}
-
-.moving.tinder--card {
-  transition: none;
-  cursor: -webkit-grabbing;
-  cursor: -moz-grabbing;
-  cursor: grabbing;
-}
-
-.tinder--card img {
-  max-width: 100%;
-  pointer-events: none;
-}
-
-.tinder--card h3 {
-  margin-top: 32px;
-  font-size: 32px;
-  padding: 0 16px;
-  pointer-events: none;
-}
-
-.tinder--card p {
-  margin-top: 24px;
-  font-size: 20px;
-  padding: 0 16px;
-  pointer-events: none;
-}
-
-.tinder--buttons {
-  flex: 0 0 100px;
-  text-align: center;
-  padding-top: 20px;
-}
-
-.tinder--buttons button {
-  border-radius: 50%;
-  line-height: 60px;
-  width: 60px;
-  border: 0;
-  background: #FFFFFF;
-  display: inline-block;
-  margin: 0 8px;
-}
-
-.tinder--buttons button:focus {
-  outline: 0;
-}
-
-.tinder--buttons i {
-  font-size: 32px;
-  vertical-align: middle;
-}
-
-.fa-heart {
-  color: #FFACE4;
-}
-
-.fa-remove {
-  color: #CDD6DD;
-}
-
   </style>
-<body>
-<div class="tinder">
-  <div class="tinder--status">
-    <i class="fa fa-remove"></i>
-    <i class="fa fa-heart"></i>
-  </div>
+  <body>
+    
+    
+<h4>Horizontal Flip</h4>
+<div class="flip">
+    <div class="front" style="background-image: url(https://images.pexels.com/photos/540518/pexels-photo-540518.jpeg?w=1260&h=750&dpr=2&auto=compress&cs=tinysrgb)">
+       <h1 class="text-shadow">MOUNTAIN</hi>
+    </div>
+    <div class="back">
+       <h2>Angular</h2>
+       <p>Good tools make application development quicker and easier to maintain than if you did everything by hand..</p>
+    </div>
+</div>
+<div class="flip">
+    <div class="front" style="background-image: url(https://images.pexels.com/photos/414171/pexels-photo-414171.jpeg?w=1260&h=750&dpr=2&auto=compress&cs=tinysrgb)">
+       <h1 class="text-shadow">LAKE</hi>
+    </div>
+    <div class="back">
+       <h2>Angular</h2>
+       <p>Good tools make application development quicker and easier to maintain than if you did everything by hand..</p>
+    </div>
+</div>
+<div class="flip">
+    <div class="front" style="background-image: url(https://images.pexels.com/photos/36717/amazing-animal-beautiful-beautifull.jpg?w=1260&h=750&dpr=2&auto=compress&cs=tinysrgb)">
+       <h1 class="text-shadow">OCEAN</hi>
+    </div>
+    <div class="back">
+       <h2>Angular</h2>
+       <p>Good tools make application development quicker and easier to maintain than if you did everything by hand..</p>
+    </div>
+</div>
 
-  <div class="tinder--cards">
-    <div class="tinder--card">
-      <img src="https://placeimg.com/600/300/people">
-      <h3>Demo card 1</h3>
-      <p>This is a demo for Tinder like swipe cards</p>
-    </div>
-    <div class="tinder--card">
-      <img src="https://placeimg.com/600/300/animals">
-      <h3>Demo card 2</h3>
-      <p>This is a demo for Tinder like swipe cards</p>
-    </div>
-    <div class="tinder--card">
-      <img src="https://placeimg.com/600/300/nature">
-      <h3>Demo card 3</h3>
-      <p>This is a demo for Tinder like swipe cards</p>
-    </div>
-    <div class="tinder--card">
-      <img src="https://placeimg.com/600/300/tech">
-      <h3>Demo card 4</h3>
-      <p>This is a demo for Tinder like swipe cards</p>
-    </div>
-    <div class="tinder--card">
-      <img src="https://placeimg.com/600/300/arch">
-      <h3>Demo card 5</h3>
-      <p>This is a demo for Tinder like swipe cards</p>
-    </div>
-  </div>
+<br>
+<br>
 
-  <div class="tinder--buttons">
-    <button id="nope"><i class="fa fa-remove"></i></button>
-    <button id="love"><i class="fa fa-heart"></i></button>
-  </div>
+<!-- vertical -->
+  
+<h4>Vertical Flip</h4>
+<div class="flip flip-vertical">
+    <div class="front" style="background-image: url(https://images.pexels.com/photos/38136/pexels-photo-38136.jpeg?w=1260&h=750&dpr=2&auto=compress&cs=tinysrgb)">
+       <h1 class="text-shadow">FOREST</hi>
+    </div>
+    <div class="back">
+       <h2>Angular</h2>
+       <p>Good tools make application development quicker and easier to maintain than if you did everything by hand..</p>
+    </div>
+</div>
+<div class="flip flip-vertical">
+    <div class="front" style="background-image: url(https://images.pexels.com/photos/34950/pexels-photo.jpg?w=1260&h=750&dpr=2&auto=compress&cs=tinysrgb)">
+       <h1 class="text-shadow">TRACK</hi>
+    </div>
+    <div class="back">
+       <h2>Angular</h2>
+       <p>Good tools make application development quicker and easier to maintain than if you did everything by hand..</p>
+    </div>
+</div>
+<div class="flip flip-vertical">
+    <div class="front" style="background-image: url(https://images.pexels.com/photos/34546/sunset-lake-landscape-summer.jpg?w=1260&h=750&dpr=2&auto=compress&cs=tinysrgb)">
+       <h1 class="text-shadow">SWAMP</hi>
+    </div>
+    <div class="back">
+       <h2>Angular</h2>
+       <p>Good tools make application development quicker and easier to maintain than if you did everything by hand..</p>
+    </div>
 </div>
   </body>
-  <script>
-    'use strict';
-
-var tinderContainer = document.querySelector('.tinder');
-var allCards = document.querySelectorAll('.tinder--card');
-var nope = document.getElementById('nope');
-var love = document.getElementById('love');
-
-function initCards(card, index) {
-  var newCards = document.querySelectorAll('.tinder--card:not(.removed)');
-
-  newCards.forEach(function (card, index) {
-    card.style.zIndex = allCards.length - index;
-    card.style.transform = 'scale(' + (20 - index) / 20 + ') translateY(-' + 30 * index + 'px)';
-    card.style.opacity = (10 - index) / 10;
-  });
-  
-  tinderContainer.classList.add('loaded');
-}
-
-initCards();
-
-allCards.forEach(function (el) {
-  var hammertime = new Hammer(el);
-
-  hammertime.on('pan', function (event) {
-    el.classList.add('moving');
-  });
-
-  hammertime.on('pan', function (event) {
-    if (event.deltaX === 0) return;
-    if (event.center.x === 0 && event.center.y === 0) return;
-
-    tinderContainer.classList.toggle('tinder_love', event.deltaX > 0);
-    tinderContainer.classList.toggle('tinder_nope', event.deltaX < 0);
-
-    var xMulti = event.deltaX * 0.03;
-    var yMulti = event.deltaY / 80;
-    var rotate = xMulti * yMulti;
-
-    event.target.style.transform = 'translate(' + event.deltaX + 'px, ' + event.deltaY + 'px) rotate(' + rotate + 'deg)';
-  });
-
-  hammertime.on('panend', function (event) {
-    el.classList.remove('moving');
-    tinderContainer.classList.remove('tinder_love');
-    tinderContainer.classList.remove('tinder_nope');
-
-    var moveOutWidth = document.body.clientWidth;
-    var keep = Math.abs(event.deltaX) < 80 || Math.abs(event.velocityX) < 0.5;
-
-    event.target.classList.toggle('removed', !keep);
-
-    if (keep) {
-      event.target.style.transform = '';
-    } else {
-      var endX = Math.max(Math.abs(event.velocityX) * moveOutWidth, moveOutWidth);
-      var toX = event.deltaX > 0 ? endX : -endX;
-      var endY = Math.abs(event.velocityY) * moveOutWidth;
-      var toY = event.deltaY > 0 ? endY : -endY;
-      var xMulti = event.deltaX * 0.03;
-      var yMulti = event.deltaY / 80;
-      var rotate = xMulti * yMulti;
-
-      event.target.style.transform = 'translate(' + toX + 'px, ' + (toY + event.deltaY) + 'px) rotate(' + rotate + 'deg)';
-      initCards();
-    }
-  });
-});
-
-function createButtonListener(love) {
-  return function (event) {
-    var cards = document.querySelectorAll('.tinder--card:not(.removed)');
-    var moveOutWidth = document.body.clientWidth * 1.5;
-
-    if (!cards.length) return false;
-
-    var card = cards[0];
-
-    card.classList.add('removed');
-
-    if (love) {
-      card.style.transform = 'translate(' + moveOutWidth + 'px, -100px) rotate(-30deg)';
-    } else {
-      card.style.transform = 'translate(-' + moveOutWidth + 'px, -100px) rotate(30deg)';
-    }
-
-    initCards();
-
-    event.preventDefault();
-  };
-}
-
-var nopeListener = createButtonListener(false);
-var loveListener = createButtonListener(true);
-
-nope.addEventListener('click', nopeListener);
-love.addEventListener('click', loveListener);
-  </script>
 </html>
